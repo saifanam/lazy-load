@@ -1,0 +1,95 @@
+<html>
+
+<head>
+	<style>
+
+		.container {
+			max-width: 1024px;
+			margin: 0 auto;
+		}
+
+		.img {
+			width: 100%;
+		}
+
+		.lazy-image {
+			width: 100%;
+		}
+
+		.visible-xs {
+			display: none;
+		}
+
+		@media screen and (max-width: 768px) {
+			.hidden-xs {
+				display: none;
+			}
+
+			.visible-xs {
+				display: block;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<img class="lazy-image hidden-xs" data-desktop-image="img/1.jpg">
+		<img class="lazy-image hidden-xs" data-desktop-image="img/2.jpg">
+		<img class="lazy-image hidden-xs" data-desktop-image="img/3.jpg">
+		<img class="lazy-image hidden-xs" data-desktop-image="img/4.jpg">
+
+		<img class="lazy-image visible-xs" data-mobile-image="img/5.jpg">
+		<img class="lazy-image visible-xs" data-mobile-image="img/6.jpeg">
+	</div>
+
+	<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	 crossorigin="anonymous"></script>
+	<script src="src/layzr.js"></script>
+	<script>
+
+		function resetImages() {
+			var lazyImages = $('.lazy-image');
+			lazyImages.each(function (index) {
+				$(this).removeAttr('src').removeAttr('data-normal');
+			});
+		}
+
+		function createURL() {
+			var lazyImages = $('.lazy-image');
+			var windowWidth = $(window).width();
+			if (windowWidth <= 767) {
+				lazyImages.each(function (index) {
+					if ($(this).attr('data-mobile-image') !== undefined) {
+						$(this).attr('data-normal', $(this).attr('data-mobile-image'));
+					}
+				});
+			}
+			else if (windowWidth > 767) {
+				lazyImages.each(function (index) {
+					if ($(this).attr('data-desktop-image') !== undefined) {
+						$(this).attr('data-normal', $(this).attr('data-desktop-image'));
+					}
+				});
+			}
+		}
+
+		function onLoadFunction() {
+			createURL(resetImages());
+			instance.update().check().handlers(true);
+		}
+
+		function onResizeFunction() {
+			onLoadFunction();
+		}
+
+		var instance = Layzr({
+			threshold: 0
+		});
+		window.addEventListener('resize', onResizeFunction);
+		window.addEventListener('DOMContentLoaded', onLoadFunction);
+
+	</script>
+</body>
+
+</html>
